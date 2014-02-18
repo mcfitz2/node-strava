@@ -1,6 +1,7 @@
 var _ = require("underscore");
 var request = require("request");
 var formdata = require("form-data");
+var async = require("async");
 var Strava = module.exports = function(config_obj) {
     if (!(this instanceof Strava)) {
 	return new Strava(config_obj);
@@ -39,7 +40,7 @@ Strava.prototype.uploads = function(params, gpx, callback) {
     var form = new formdata()
 
     form.append("file", new Buffer(gpx), {
-	filename: 'test.gpx',
+	filename: 'strava.gpx' || params.filename,
 	contentType: 'application/xml',
 	knownLength: gpx.length}); 
     form.append("activity_type", params.activity_type || "ride");
@@ -52,6 +53,37 @@ Strava.prototype.uploads = function(params, gpx, callback) {
 		"Authorization":"Bearer "+self.config.access_token,
 		'Content-Length': length
 	    },
-	}, callback)._form = form;
+	}, function(err, res, body) {
+	    if (err) return callback(err, body);
+	    if (body.error) {
+		console.log(body);
+		return callback(true, body);
+	    }
+	    var upload_id = body.id;
+	    var activity_id = null;
+	    async.doWhilst(function(callback) {
+		setTimeout(function() {
+		    request.get({
+			json:true,
+			url:self.config.api_base+"/uploads/"+upload_id, 
+			headers:{
+			    "Authorization":"Bearer "+self.config.access_token
+			}
+		    }, function(err, res, body) {
+			if (err) {
+			    console.log(err, body);
+			    return callback(err, body);
+			}
+			activity_id = body.activity_id;
+			console.log("Polling for upload status", body.status);
+			callback(err, body);
+		    });
+		}, 1000);
+	    }, function() {
+		return (activity_id === null);
+	    }, function(err) {
+		callback(err,activity_id);
+	    });
+	})._form = form;
     })
 };
