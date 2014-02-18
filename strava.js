@@ -46,6 +46,7 @@ Strava.prototype.uploads = function(params, gpx, callback) {
     form.append("data_type", params.data_type || "gpx");
     form.getLength(function(err, length) {
 	request.post({
+	    json:true,
 	    url:self.config.api_base+"/uploads", 
 	    headers:{
 		"Authorization":"Bearer "+self.config.access_token,
