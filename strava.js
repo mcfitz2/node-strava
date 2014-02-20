@@ -9,15 +9,19 @@ function responseHandler(callback) {
 	    return callback(err, body);
 	} 
 	if (res.statusCode >= 400 && res.statusCode <= 599) {
-	    err = new Error("HTTP error");
-	    err.res = res;
+	    
+	    err = new Error("HTTP error "+res.statusCode);
+//	    err.res = res;
 	    return callback(err, body);
 	}
 	if (body && body.errors) {
-	    err = new Error("API Error");
-	    err.res = res;
+	    err = new Error("API Error "+res.statusCode);
+//	    err.res = res;
 	    return callback(err, body);
 	}
+//	if (body === undefined) {
+//	    console.log(err, res, body);
+//	}
 	return callback(null, body);
     };
 }
@@ -47,7 +51,7 @@ var Strava = function(config_obj) {
 		callback = params;
 		params = {};
 	    }
-	    self.get("/athlete", params, responseHandler(callback));
+	    self._get("/athlete", params, responseHandler(callback));
 	},
 	update: function(params, callback) {
 	    if (typeof params == 'function') {
@@ -56,22 +60,13 @@ var Strava = function(config_obj) {
 	    }
 	    throw new Error("not implemented");
 	},
-	koms: {
-	    get: function(params, callback) {
-		if (typeof params == 'function') {
-		    callback = params;
-		    params = {};
-		}
-		self.get("/athlete/koms", {}, responseHandler(callback));
-	    }
-	},
 	followers: {
 	    get: function(params, callback) {
 		if (typeof params == 'function') {
 		    callback = params;
 		    params = {};
 		}
-		self.get("/athlete/followers", params, responseHandler(callback));
+		self._get("/athlete/followers", params, responseHandler(callback));
 	    }
 	},
 	friends: {
@@ -80,7 +75,7 @@ var Strava = function(config_obj) {
 		    callback = params;
 		    params = {};
 		}
-		self.get("/athlete/friends", params, responseHandler(callback));
+		self._get("/athlete/friends", params, responseHandler(callback));
 	    }
 	},
 	bothfollowing: {
@@ -89,7 +84,7 @@ var Strava = function(config_obj) {
 		    callback = params;
 		    params = {};
 		}
-		self.get("/athlete", params, responseHandler(callback));
+		self._get("/athlete", params, responseHandler(callback));
 	    }
 	},
 	activities: {
@@ -98,7 +93,11 @@ var Strava = function(config_obj) {
 		    callback = params;
 		    params = {};
 		}
-		self.get("/athlete/activities", params, responseHandler(callback));
+		if (params.paginate) {
+		    self._paged_get("/athlete/activities", params, callback);
+		} else {
+		    self._get("/athlete/activities", params, responseHandler(callback));
+		}
 	    }
 	},
 	clubs: {
@@ -107,7 +106,7 @@ var Strava = function(config_obj) {
 		    callback = params;
 		    params = {};
 		}
-		self.get("/athlete/clubs", params, responseHandler(callback));
+		self._get("/athlete/clubs", params, responseHandler(callback));
 	    }
 	}
     };
@@ -122,7 +121,7 @@ var Strava = function(config_obj) {
 		params = {};
 		return self.athlete.get(params, callback);
 	    }
-	    self.get("/athletes/"+id, params, responseHandler(callback));
+	    self._get("/athletes/"+id, params, responseHandler(callback));
 	},
 	update: function(id, params, callback) {
 	    if (typeof id == 'function' && arguments.length == 1) {
@@ -143,7 +142,7 @@ var Strava = function(config_obj) {
 		    params = {};
 		    return self.athlete.koms(params, callback);
 		}
-		self.get("/athletes/"+id+"/koms", params, responseHandler(callback));
+		self._get("/athletes/"+id+"/koms", params, responseHandler(callback));
 	    }
 	},
 	friends: {
@@ -157,7 +156,7 @@ var Strava = function(config_obj) {
 		    params = {};
 		    return self.athlete.friends(params, callback);
 		}
-		self.get("/athletes/"+id+"/friends", params, responseHandler(callback));
+		self._get("/athletes/"+id+"/friends", params, responseHandler(callback));
 	    }
 	},
 	followers: {
@@ -171,7 +170,7 @@ var Strava = function(config_obj) {
 		    params = {};
 		    return self.athlete.folllowers(params, callback);
 		}
-		self.get("/athletes/"+id+"/followers", params, responseHandler(callback));
+		self._get("/athletes/"+id+"/followers", params, responseHandler(callback));
 	    }
 	},
 	bothfollowing: {
@@ -185,7 +184,7 @@ var Strava = function(config_obj) {
 		    params = {};
 		    return self.athlete.bothfolllowing(params, callback);
 		}
-		self.get("/athletes/"+id+"/both-following", params, responseHandler(callback));
+		self._get("/athletes/"+id+"/both-following", params, responseHandler(callback));
 	    }
 	}
     };
@@ -196,10 +195,10 @@ var Strava = function(config_obj) {
                 params = {};
             }
             if (typeof id == 'function' && arguments.length == 1) {
-                return new Error("Activity ID is required");
+                throw new Error("Activity ID is required");
 		
             }
-            self.get("/activities/"+id, params, responseHandler(callback));
+            self._get("/activities/"+id, params, responseHandler(callback));
 	},
 	create:function(params, callback) {
 	    throw new Error("not implemented");
@@ -217,10 +216,10 @@ var Strava = function(config_obj) {
                     params = {};
 		}
 		if (typeof id == 'function' && arguments.length == 1) {
-                    return new Error("Activity ID is required");
+                    throw new Error("Activity ID is required");
 		    
 		}
-		self.get("/activities/"+id+"/comments", params, responseHandler(callback));
+		self._get("/activities/"+id+"/comments", params, responseHandler(callback));
 	    }
 	},
 	kudos: {
@@ -230,10 +229,10 @@ var Strava = function(config_obj) {
                     params = {};
 		}
 		if (typeof id == 'function' && arguments.length == 1) {
-                    return new Error("Activity ID is required");
+                    throw new Error("Activity ID is required");
 		    
 		}
-		self.get("/activities/"+id+"/kudos", params, responseHandler(callback));
+		self._get("/activities/"+id+"/kudos", params, responseHandler(callback));
 	    }
 	},
 	photos:{
@@ -243,10 +242,10 @@ var Strava = function(config_obj) {
                     params = {};
 		}
 		if (typeof id == 'function' && arguments.length == 1) {
-                    return new Error("Activity ID is required");
+                    throw new Error("Activity ID is required");
 		    
 		}
-		self.get("/activities/"+id+"/photos", params, responseHandler(callback));
+		self._get("/activities/"+id+"/photos", params, responseHandler(callback));
 	    }
 	},
 	following: {
@@ -256,7 +255,7 @@ var Strava = function(config_obj) {
                     params = {};
 		}
 
-		self.get("/activities/following", params, responseHandler(callback));
+		self._get("/activities/following", params, responseHandler(callback));
 	    }
 	},
 	zones: {
@@ -266,10 +265,10 @@ var Strava = function(config_obj) {
                     params = {};
 		}
 		if (typeof id == 'function' && arguments.length == 1) {
-                    return new Error("Activity ID is required");
+                    throw new Error("Activity ID is required");
 		    
 		}
-		self.get("/activities/"+id+"/zones", params, responseHandler(callback));
+		self._get("/activities/"+id+"/zones", params, responseHandler(callback));
 	    }
 	},
 	laps: {
@@ -279,23 +278,29 @@ var Strava = function(config_obj) {
                     params = {};
 		}
 		if (typeof id == 'function' && arguments.length == 1) {
-                    return new Error("Activity ID is required");
+                    throw new Error("Activity ID is required");
 		    
 		}
-		self.get("/activities/"+id+"/laps", params, responseHandler(callback));
+		self._get("/activities/"+id+"/laps", params, responseHandler(callback));
 	    }
 	},
 	streams: {
 	    get: function(id, types, params, callback) {
-		if (typeof params == 'function' && arguments.length == 2) {
+		if (typeof params == 'function' && arguments.length == 3) {
                     callback = params;
                     params = {};
 		}
-		if (typeof id == 'function' && arguments.length == 1) {
-                    return new Error("Activity ID is required");
-		    
+		if (typeof id == 'function' && arguments.length == 2) {
+                    throw new Error("Activity ID is required");
 		}
-		self.get("/activities/"+id+"/streams", params, responseHandler(callback));
+		if (arguments.length < 3) {
+		    throw new Error("Invalid arguments");
+		}
+		types = types.join(",");
+
+		types = "time";
+		console.log("ST",types, id, params);
+		self._get("/activities/"+id+"/streams/"+types, params, responseHandler(callback));
 	    }
 	}
     };
@@ -306,10 +311,10 @@ var Strava = function(config_obj) {
                 params = {};
             }
             if (typeof id == 'function' && arguments.length == 1) {
-                return new Error("Club ID is required");
+                throw new Error("Club ID is required");
 		
             }
-            self.get("/clubs/"+id, params, responseHandler(callback));
+            self._get("/clubs/"+id, params, responseHandler(callback));
 	},
 	members: {
 	    get:function(id, params, callback) {
@@ -318,10 +323,10 @@ var Strava = function(config_obj) {
                 params = {};
             }
             if (typeof id == 'function' && arguments.length == 1) {
-                return new Error("Club ID is required");
+                throw new Error("Club ID is required");
 		
             }
-            self.get("/clubs/"+id+"/members", params, responseHandler(callback));
+            self._get("/clubs/"+id+"/members", params, responseHandler(callback));
 
 	    }
 	},
@@ -332,10 +337,10 @@ var Strava = function(config_obj) {
                 params = {};
             }
             if (typeof id == 'function' && arguments.length == 1) {
-                return new Error("Club ID is required");
+                throw new Error("Club ID is required");
 		
             }
-            self.get("/clubs/"+id+"/activities", params, responseHandler(callback));
+            self._get("/clubs/"+id+"/activities", params, responseHandler(callback));
 
 	    }
 	}
@@ -347,10 +352,10 @@ var Strava = function(config_obj) {
                 params = {};
             }
             if (typeof id == 'function' && arguments.length == 1) {
-                return new Error("Gear ID is required");
+                throw new Error("Gear ID is required");
 		
             }
-            self.get("/gear/"+id, params, responseHandler(callback));
+            self._get("/gear/"+id, params, responseHandler(callback));
 
 	}
     };
@@ -361,10 +366,10 @@ var Strava = function(config_obj) {
                 params = {};
             }
             if (typeof id == 'function' && arguments.length == 1) {
-                return new Error("Segment ID is required");
+                throw new Error("Segment ID is required");
 		
             }
-            self.get("/segments/"+id, params, responseHandler(callback));
+            self._get("/segments/"+id, params, responseHandler(callback));
 
 	},
 	streams: {
@@ -374,10 +379,10 @@ var Strava = function(config_obj) {
                     params = {};
 		}
 		if (typeof id == 'function' && arguments.length == 1) {
-                    return new Error("Segment ID is required");
+                    throw new Error("Segment ID is required");
 		    
 		}
-		self.get("/segments/"+id+"/streams", params, responseHandler(callback));
+		self._get("/segments/"+id+"/streams", params, responseHandler(callback));
 		
 	    }
 	},
@@ -387,7 +392,7 @@ var Strava = function(config_obj) {
                     callback = params;
                     params = {};
 		}
-		self.get("/segments/starred", params, responseHandler(callback));
+		self._get("/segments/starred", params, responseHandler(callback));
 		
 	    }
 	},
@@ -397,7 +402,7 @@ var Strava = function(config_obj) {
                     callback = params;
                     params = {};
 		}
-		self.get("/segments/explore", params, responseHandler(callback)); 
+		self._get("/segments/explore", params, responseHandler(callback)); 
 	    }
 	    
 	},
@@ -408,10 +413,10 @@ var Strava = function(config_obj) {
                     params = {};
 		}
 		if (typeof id == 'function' && arguments.length == 1) {
-                    return new Error("Segment ID is required");
+                    throw new Error("Segment ID is required");
 		    
 		}
-		self.get("/segments/"+id+"/leaderboard", params, responseHandler(callback));
+		self._get("/segments/"+id+"/leaderboard", params, responseHandler(callback));
 	    }
 	}
 
@@ -424,10 +429,10 @@ var Strava = function(config_obj) {
                 params = {};
             }
             if (typeof id == 'function' && arguments.length == 1) {
-                return new Error("Gear ID is required");
+                throw new Error("Gear ID is required");
 		
             }
-            self.get("/segment_efforts/"+id, params, responseHandler(callback));
+            self._get("/segment_efforts/"+id, params, responseHandler(callback));
 	},
 	streams: {
 	    get: function(id, types, params, callback) {
@@ -436,10 +441,10 @@ var Strava = function(config_obj) {
                     params = {};
 		}
 		if (typeof id == 'function' && arguments.length == 1) {
-                    return new Error("Segment ID is required");
+                    throw new Error("Segment ID is required");
 		    
 		}
-		self.get("/segment_efforts/"+id+"/streams", params, responseHandler(callback));
+		self._get("/segment_efforts/"+id+"/streams", params, responseHandler(callback));
 	    }
 	}
     };
@@ -447,25 +452,55 @@ var Strava = function(config_obj) {
 };
 
 
-Strava.prototype.get = function(call, params, callback) {
-    if(!call) throw new Error('call is required')
-    if(!this.config.access_token) throw new Error('Valid access token is required')
+Strava.prototype._get = function(call, params, callback) {
+    if(!call) {
+	throw new Error('call is required');
+    }
+    if(!this.config.access_token) {
+	throw new Error('Valid access token is required');
+    }
 
     var url = this.config.api_base+call;
 
     params.access_token = this.config.access_token;
     
     this.http.get({url:url, json:true, qs:params}, callback);
-}
+};
+Strava.prototype._paged_get = function(call, params, callback) {
+    var per_page = 100;
+    var pages = [];
+    var page = [];
+    var self = this;
+    var pagenum = 1;
+    async.doWhilst(function(callback) {
+	self._get(call, {per_page:per_page, page:pagenum}, responseHandler(function(err, res) {
+	    if (err) {
+		callback(err, res);
+	    } else {
+		page = res;
+		page.forEach(function(item) {
+		    pages.push(item);
+		});
+		pagenum++;
+		callback();
+	    }
+	}));
+    }, function() {
+	return page.length == per_page;
+    }, function(err) {
+	callback(err, pages);
+    });
+};
+		 
 Strava.prototype.uploads = function(params, gpx, callback) {
     var self = this;
     if (! gpx instanceof String) { 
 	throw new Error("Sorry, only string uploads are implemented");
     }
-    var form = new formdata()
+    var form = new formdata();
 
     form.append("file", new Buffer(gpx), {
-	filename: 'strava.gpx' || params.filename,
+	filename: params.filename || "strava.gpx",
 	contentType: 'application/xml',
 	knownLength: gpx.length}); 
     form.append("activity_type", params.activity_type || "ride");
@@ -478,12 +513,7 @@ Strava.prototype.uploads = function(params, gpx, callback) {
 		"Authorization":"Bearer "+self.config.access_token,
 		'Content-Length': length
 	    },
-	}, function(err, res, body) {
-	    if (err) return callback(err, body);
-	    if (body.error) {
-		console.log(body);
-		return callback(true, body);
-	    }
+	}, responseHandler(function(err, body) {
 	    var upload_id = body.id;
 	    var activity_id = null;
 	    async.doWhilst(function(callback) {
@@ -509,7 +539,7 @@ Strava.prototype.uploads = function(params, gpx, callback) {
 	    }, function(err) {
 		callback(err,activity_id);
 	    });
-	})._form = form;
-    })
+	}))._form = form;
+    });
 };
 module.exports = Strava;
