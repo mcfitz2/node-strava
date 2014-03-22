@@ -66,7 +66,11 @@ var Strava = function(config_obj) {
 		    callback = params;
 		    params = {};
 		}
-		self._get("/athlete/followers", params, responseHandler(callback));
+	if (params.paginate) {
+		    self._paged_get("/athlete/followers", params, callback);
+		} else {
+		    self._get("/athlete/followers", params, responseHandler(callback));
+		}
 	    }
 	},
 	friends: {
@@ -75,10 +79,14 @@ var Strava = function(config_obj) {
 		    callback = params;
 		    params = {};
 		}
-		self._get("/athlete/friends", params, responseHandler(callback));
+		if (params.paginate) {
+		    self._paged_get("/athlete/friends", params, callback);
+		} else {
+		    self._get("/athlete/friends", params, responseHandler(callback));
+		}
 	    }
 	},
-	bothfollowing: {
+/*	bothfollowing: {
 	    get: function(params, callback) {
 		if (typeof params == 'function') {
 		    callback = params;
@@ -86,7 +94,7 @@ var Strava = function(config_obj) {
 		}
 		self._get("/athlete", params, responseHandler(callback));
 	    }
-	},
+	},*/
 	activities: {
 	    get: function(params, callback) {
 		if (typeof params == 'function') {
@@ -142,7 +150,11 @@ var Strava = function(config_obj) {
 		    params = {};
 		    return self.athlete.koms(params, callback);
 		}
-		self._get("/athletes/"+id+"/koms", params, responseHandler(callback));
+		if (params.paginate) {
+		    self._paged_get("/athletes/"+id+"/koms", params, callback);
+		} else {
+		    self._get("/athletes/"+id+"/koms", params, responseHandler(callback)); 
+		}
 	    }
 	},
 	friends: {
@@ -156,7 +168,11 @@ var Strava = function(config_obj) {
 		    params = {};
 		    return self.athlete.friends(params, callback);
 		}
-		self._get("/athletes/"+id+"/friends", params, responseHandler(callback));
+		if (params.paginate) {
+		    self._paged_get("/athletes/"+id+"/friends", params, callback); 
+		} else {
+		    self._get("/athletes/"+id+"/friends", params, responseHandler(callback));
+		}
 	    }
 	},
 	followers: {
@@ -170,7 +186,11 @@ var Strava = function(config_obj) {
 		    params = {};
 		    return self.athlete.folllowers(params, callback);
 		}
-		self._get("/athletes/"+id+"/followers", params, responseHandler(callback));
+		if (params.paginate) {
+		    self._paged_get("/athletes/"+id+"/followers", params, callback);
+		} else {
+		    self._get("/athletes/"+id+"/followers", params, responseHandler(callback));
+		}
 	    }
 	},
 	bothfollowing: {
@@ -184,7 +204,11 @@ var Strava = function(config_obj) {
 		    params = {};
 		    return self.athlete.bothfolllowing(params, callback);
 		}
-		self._get("/athletes/"+id+"/both-following", params, responseHandler(callback));
+		if (params.paginate) {
+		    self._paged_get("/athletes/"+id+"/both-following", params, callback);
+		} else {
+		    self._get("/athletes/"+id+"/both-following", params, responseHandler(callback));
+		}
 	    }
 	}
     };
@@ -516,7 +540,9 @@ Strava.prototype.uploads = function(params, gpx, callback) {
 	}, responseHandler(function(err, body) {
 	    var upload_id = body.id;
 	    var activity_id = null;
+	    var tries = 0;
 	    async.doWhilst(function(callback) {
+		tries++;
 		setTimeout(function() {
 		    request.get({
 			json:true,
@@ -535,7 +561,7 @@ Strava.prototype.uploads = function(params, gpx, callback) {
 		    });
 		}, 1000);
 	    }, function() {
-		return (activity_id === null);
+		return (activity_id === null) && (tries < 20);
 	    }, function(err) {
 		callback(err,activity_id);
 	    });
