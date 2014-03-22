@@ -561,7 +561,7 @@ Strava.prototype.uploads = function(params, gpx, callback) {
 		    });
 		}, 1000);
 	    }, function() {
-		return (activity_id === null) && (tries < 20);
+		return (activity_id === null) && (tries < 5);
 	    }, function(err) {
 		callback(err,activity_id);
 	    });
