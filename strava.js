@@ -243,7 +243,11 @@ var Strava = function(config_obj) {
                     throw new Error("Activity ID is required");
 		    
 		}
-		self._get("/activities/"+id+"/comments", params, responseHandler(callback));
+		if (params.paginate) {
+		    self._paged_get("/activities/"+id+"/comments", params, callback);
+		} else {
+		    self._get("/activities/"+id+"/comments", params, responseHandler(callback));
+		}
 	    }
 	},
 	kudos: {
@@ -256,7 +260,11 @@ var Strava = function(config_obj) {
                     throw new Error("Activity ID is required");
 		    
 		}
-		self._get("/activities/"+id+"/kudos", params, responseHandler(callback));
+		if (params.paginate) {
+		    self._paged_get("/activities/"+id+"/kudos", params, callback);
+		} else {
+		    self._get("/activities/"+id+"/kudos", params, responseHandler(callback));
+		}
 	    }
 	},
 	photos:{
@@ -279,7 +287,11 @@ var Strava = function(config_obj) {
                     params = {};
 		}
 
-		self._get("/activities/following", params, responseHandler(callback));
+		if (params.paginate) {
+		    self._paged_get("/activities/following", params, callback);
+		} else {
+		    self._get("/activities/following", params, responseHandler(callback));
+		}
 	    }
 	},
 	zones: {
@@ -343,29 +355,35 @@ var Strava = function(config_obj) {
 	members: {
 	    get:function(id, params, callback) {
 		if (typeof params == 'function' && arguments.length == 2) {
-                callback = params;
-                params = {};
-            }
-            if (typeof id == 'function' && arguments.length == 1) {
-                throw new Error("Club ID is required");
-		
-            }
-            self._get("/clubs/"+id+"/members", params, responseHandler(callback));
-
+                    callback = params;
+                    params = {};
+		}
+		if (typeof id == 'function' && arguments.length == 1) {
+                    throw new Error("Club ID is required");
+		    
+		}
+		if (params.paginate) {
+		    self._paged_get("/clubs/"+id+"/members", params, callback);
+		} else {
+		    self._get("/clubs/"+id+"/members", params, responseHandler(callback));
+		}
 	    }
 	},
 	activities: {
 	    get:function(id, params, callback) {
 		if (typeof params == 'function' && arguments.length == 2) {
-                callback = params;
-                params = {};
-            }
-            if (typeof id == 'function' && arguments.length == 1) {
-                throw new Error("Club ID is required");
-		
-            }
-            self._get("/clubs/"+id+"/activities", params, responseHandler(callback));
-
+                    callback = params;
+                    params = {};
+		}
+		if (typeof id == 'function' && arguments.length == 1) {
+                    throw new Error("Club ID is required");
+		    
+		}
+		if (params.paginate) {
+		    self._paged_get("/clubs/"+id+"/activities", params, callback);
+		} else {
+		    self._get("/clubs/"+id+"/activities", params, responseHandler(callback));
+		}
 	    }
 	}
     };
@@ -416,7 +434,11 @@ var Strava = function(config_obj) {
                     callback = params;
                     params = {};
 		}
-		self._get("/segments/starred", params, responseHandler(callback));
+		if (params.paginate) {
+		    self._paged_get("/segments/starred", params, callback);
+		} else {
+		    self._get("/segments/starred", params, responseHandler(callback));
+		}
 		
 	    }
 	},
@@ -440,7 +462,11 @@ var Strava = function(config_obj) {
                     throw new Error("Segment ID is required");
 		    
 		}
-		self._get("/segments/"+id+"/leaderboard", params, responseHandler(callback));
+		if (params.paginate) {
+		    self._paged_get("/segments/"+id+"/leaderboard", params, callback);
+		} else {
+		    self._get("/segments/"+id+"/leaderboard", params, responseHandler(callback));
+		}
 	    }
 	}
 
@@ -453,7 +479,7 @@ var Strava = function(config_obj) {
                 params = {};
             }
             if (typeof id == 'function' && arguments.length == 1) {
-                throw new Error("Gear ID is required");
+                throw new Error("Segment ID is required");
 		
             }
             self._get("/segment_efforts/"+id, params, responseHandler(callback));
