@@ -3,7 +3,7 @@ node-strava
 
 Node.js library for the Strava V3 API
 
-
+Check out the offical documentation: <http://strava.github.io/api/>
 
 ####athlete
 + get(params, callback)
@@ -23,16 +23,15 @@ Node.js library for the Strava V3 API
 
 ####activities
 + get(id, params, callback)
-+ create(id, params, callback)
++ create(params, callback)
 + update(id, params, callback)
 + delete(id, params, callback)
 + comments.get(id, params, callback)
 + kudos.get(id, params, callback)
 + photos.get(id, params, callback)
-+ following.get(id, params, callback)
++ following.get(params, callback)
 + zones.get(id, params, callback)
 + laps.get(id, params, callback)
-+ streams.get(id, params, callback)
 
 ####clubs
 + get(id, params, callback)
@@ -44,9 +43,8 @@ Node.js library for the Strava V3 API
 
 ####segments
 + get(id, params, callback)
-+ streams.get(id, params, callback)
-+ starred.get(id, params, callback)
-+ explore.get(id, params, callback)
++ starred.get(params, callback)
++ explore.get(params, callback)
 + leaderboard.get(id, params, callback)
 
 ####segmentefforts
@@ -54,3 +52,13 @@ Node.js library for the Strava V3 API
 
 ####streams
 + get(id, params, callback)
+
+####uploads(params, callback)
+
+Accepted file types: GPX, FIT, TCX
+
+Params:
+You must provide either `filename` or `data`. Use `filename` to open a file from disk and upload it. Use `data` to provide a stream, buffer, or string to be uploaded. If both are set, the `data` parameter is used. 
+
+
+  
