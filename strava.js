@@ -338,7 +338,7 @@ var Strava = function(config_obj) {
 		self._get("/activities/"+id+"/laps", params, responseHandler(callback));
 	    }
 	},
-	streams: {
+/*	streams: {
 	    get: function(id, types, params, callback) {
 		if (typeof params == 'function' && arguments.length == 3) {
                     callback = params;
@@ -356,7 +356,7 @@ var Strava = function(config_obj) {
 		console.log("ST",types, id, params);
 		self._get("/activities/"+id+"/streams/"+types, params, responseHandler(callback));
 	    }
-	}
+	}*/
     };
     this.clubs = {
 	get: function(id, params, callback) {
