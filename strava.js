@@ -432,8 +432,8 @@ var Strava = function(config_obj) {
             self._get("/segments/"+id, params, responseHandler(callback));
 
 	},
-	streams: {
-	    get: function(id, types, params, callback) {
+/*	streams: {
+	    get: function(id, params, callback) {
 		if (typeof params == 'function' && arguments.length == 2) {
                     callback = params;
                     params = {};
@@ -445,7 +445,7 @@ var Strava = function(config_obj) {
 		self._get("/segments/"+id+"/streams", params, responseHandler(callback));
 		
 	    }
-	},
+	},*/
 	starred: {
 	    get: function(params, callback) {
 		if (typeof params == 'function' && arguments.length == 2) {
@@ -502,7 +502,7 @@ var Strava = function(config_obj) {
             }
             self._get("/segment_efforts/"+id, params, responseHandler(callback));
 	},
-	streams: {
+/*	streams: {
 	    get: function(id, types, params, callback) {
 		if (typeof params == 'function' && arguments.length == 2) {
                     callback = params;
@@ -514,7 +514,7 @@ var Strava = function(config_obj) {
 		}
 		self._get("/segment_efforts/"+id+"/streams", params, responseHandler(callback));
 	    }
-	}
+	}*/
     };
     
 };

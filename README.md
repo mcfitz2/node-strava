@@ -4,7 +4,15 @@ node-strava
 Node.js library for the Strava V3 API
 
 
+### each(arr, iterator, callback)
+Description
+__Arguments__
 
+__Examples__
+```
+```
+
+---------------------------------------
 ####athlete
 #####get(params, callback)
 ~~#####update(params, callback)
