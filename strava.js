@@ -2,12 +2,18 @@ var _ = require("underscore");
 var request = require("request");
 var formdata = require("form-data");
 var async = require("async");
+var fs = require("fs");
+var stream = require("stream");
 function responseHandler(callback) {
     return function handler(err, res, body) {
 	if (err) {
 	    err.res = res;
 	    return callback(err, body);
-	} 
+	}
+	if (body === undefined) {
+	    body = {};
+	}
+	body.statusCode = res.statusCode;
 	if (res.statusCode >= 400 && res.statusCode <= 599) {
 	    
 	    err = new Error("HTTP error "+res.statusCode);
@@ -22,10 +28,14 @@ function responseHandler(callback) {
 //	if (body === undefined) {
 //	    console.log(err, res, body);
 //	}
+	
 	return callback(null, body);
     };
 }
-	
+function setTimeoutImm(func, interval) {
+    func();
+    return setTimeout(func, interval);
+}
 var Strava = function(config_obj) {
     if (!(this instanceof Strava)) {
 	return new Strava(config_obj);
@@ -231,7 +241,15 @@ var Strava = function(config_obj) {
 	    throw new Error("not implemented");
 	},
 	delete:function(id, params, callback) {
-	    throw new Error("not implemented");
+	    if (typeof params == 'function' && arguments.length == 2) {
+                callback = params;
+                params = {};
+            }
+            if (typeof id == 'function' && arguments.length == 1) {
+                throw new Error("Activity ID is required");
+		
+            }
+            self._delete("/activities/"+id, params, responseHandler(callback));
 	},
 	comments: {
 	    get:function(id, params, callback) {
@@ -516,6 +534,20 @@ Strava.prototype._get = function(call, params, callback) {
     
     this.http.get({url:url, json:true, qs:params}, callback);
 };
+Strava.prototype._delete = function(call, params, callback) {
+    if(!call) {
+	throw new Error('call is required');
+    }
+    if(!this.config.access_token) {
+	throw new Error('Valid access token is required');
+    }
+
+    var url = this.config.api_base+call;
+
+    params.access_token = this.config.access_token;
+    
+    this.http.del({url:url, json:true, qs:params}, callback);
+};
 Strava.prototype._paged_get = function(call, params, callback) {
     var per_page = 100;
     var pages = [];
@@ -541,57 +573,113 @@ Strava.prototype._paged_get = function(call, params, callback) {
 	callback(err, pages);
     });
 };
-		 
-Strava.prototype.uploads = function(params, gpx, callback) {
+//accepts gpx,fit,or tcx file as filename, stream, buffer, or string
+Strava.prototype.uploads = function(params, callback) {
     var self = this;
-    if (! gpx instanceof String) { 
-	throw new Error("Sorry, only string uploads are implemented");
-    }
-    var form = new formdata();
+    
+    function poll(err, res, callback) {
+	function checkStatus(body) {
+	    switch(body.status) {
+	    case "Your activity is still being processed.":
+		return false;
+	    case "The created activity has been deleted.":
+		return true;
+	    case "There was an error processing your activity.":
+		return true;
+	    case "Your activity is ready.":
+		return true;
+	    }
+	}
 
-    form.append("file", new Buffer(gpx), {
-	filename: params.filename || "strava.gpx",
-	contentType: 'application/xml',
-	knownLength: gpx.length}); 
-    form.append("activity_type", params.activity_type || "ride");
-    form.append("data_type", params.data_type || "gpx");
-    form.getLength(function(err, length) {
-	request.post({
-	    json:true,
-	    url:self.config.api_base+"/uploads", 
-	    headers:{
-		"Authorization":"Bearer "+self.config.access_token,
-		'Content-Length': length
-	    },
-	}, responseHandler(function(err, body) {
-	    var upload_id = body.id;
-	    var activity_id = null;
-	    var tries = 0;
-	    async.doWhilst(function(callback) {
-		tries++;
-		setTimeout(function() {
-		    request.get({
-			json:true,
-			url:self.config.api_base+"/uploads/"+upload_id, 
-			headers:{
-			    "Authorization":"Bearer "+self.config.access_token
-			}
-		    }, function(err, res, body) {
-			if (err) {
-			    console.log(err, body);
-			    return callback(err, body);
-			}
-			activity_id = body.activity_id;
-			console.log("Polling for upload status", body.status);
-			callback(err, body);
-		    });
-		}, 1000);
-	    }, function() {
-		return (activity_id === null) && (tries < 5);
-	    }, function(err) {
-		callback(err,activity_id);
+	if (checkStatus(res)) {
+	    return callback(err, res);
+	}
+	var interval = Math.max(params.poll_interval, 1000)||2000;
+	function status(id, callback) {
+	    request.get({
+		json:true,
+		url:self.config.api_base+"/uploads/"+id,
+		headers:{
+		    "Authorization":"Bearer "+self.config.access_token,
+		},
+	    }, responseHandler(function(err, body) {
+		body.done = checkStatus(body);
+		res = body;
+		if (params.poll_callback) {
+		    params.poll_callback(err, body);
+		}
+		callback(err, res);
+	    }));
+	}
+	
+	async.doWhilst(function(callback) {
+	    setTimeout(function() {
+		status(res.id, callback);
+	    }, interval);
+	}, function() {
+	    return !checkStatus(res);
+	}, function(err) {
+	    callback(err, res);
+	});
+    }
+    function upload(buffer, callback) {
+	var form = new formdata();
+	["name", "description", "private", "external_id", "trainer"].forEach(function(key) {
+	    if (params[key]) {
+		form.append(key, params[key]);
+	    }
+	});
+	form.append("file", buffer, {
+	    filename: params.filename || "strava.gpx",
+	    knownLength: buffer.length}); 
+	form.append("activity_type", params.activity_type || "ride");
+	form.append("data_type", params.data_type || "gpx");
+	form.getLength(function(err, length) {
+	    request.post({
+		json:true,
+		url:self.config.api_base+"/uploads", 
+		headers:{
+		    "Authorization":"Bearer "+self.config.access_token,
+		    'Content-Length': length
+		},
+	    }, responseHandler(function(err, body) {
+		if (params.wait) {
+		    poll(err, body, callback);
+		} else {
+		    callback(err, body);
+		}
+	    }))._form = form;
+	});
+    }
+    if (!params.data) {
+	if (! params.filename) {
+	    throw new Error("missing data and filename params");
+	}
+	fs.readFile(params.filename, function(err, data) {
+	    if (err) {
+		throw err;
+	    }
+	    upload(data, callback);
+	});
+    } else {
+	if (params.data instanceof stream.Readable) {
+	    var arr = [];
+	    params.data.on("data", function(chunk) {
+		arr.push(chunk);
 	    });
-	}))._form = form;
-    });
+	    params.data.on("end", function() {
+		var buff = Buffer.concat(arr);
+		upload(buff, callback);
+	    });
+	} else if (params.data instanceof String) {
+	    upload(new Buffer(params.data), callback);
+	} else if (params.data instanceof Buffer) {
+	    upload(params.data, callback);
+	} else {
+	    console.log(params.data);
+	    console.log("data type not supported");
+	}
+    }
+
 };
 module.exports = Strava;
