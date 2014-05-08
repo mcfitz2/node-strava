@@ -227,7 +227,7 @@ __Examples__
 ```
 ---------------------------------------
 
-<!---### streams.get(id, params, callback)
+### streams.get(id, params, callback)
 
 
 
@@ -235,7 +235,7 @@ __Examples__
 __Examples__
 ```
 ```
---------------------------------------- -->
+---------------------------------------
 
 ## clubs
 
@@ -295,6 +295,16 @@ __Examples__
 ```
 ---------------------------------------
 
+### streams.get(id, params, callback)
+
+
+
+
+__Examples__
+```
+```
+---------------------------------------
+
 ### starred.get(id, params, callback)
 
 __Parameters__
@@ -336,6 +346,14 @@ __Examples__
 ```
 ```
 ---------------------------------------
+
+### streams.get(id, params, callback)
+
+__Examples__
+```
+```
+---------------------------------------
+
 ## uploads(id, params, callback)
 __Parameters__
 * `wait` - Poll API for upload status and return only after an error or a successful upload

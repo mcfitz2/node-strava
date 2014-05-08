@@ -338,8 +338,8 @@ var Strava = function(config_obj) {
 		self._get("/activities/"+id+"/laps", params, responseHandler(callback));
 	    }
 	},
-/*	streams: {
-	    get: function(id, types, params, callback) {
+	streams: {
+	    get: function(id, params, callback) {
 		if (typeof params == 'function' && arguments.length == 3) {
                     callback = params;
                     params = {};
@@ -350,13 +350,13 @@ var Strava = function(config_obj) {
 		if (arguments.length < 3) {
 		    throw new Error("Invalid arguments");
 		}
-		types = types.join(",");
+		var types = params.types.join(",");
 
 		types = "time";
-		console.log("ST",types, id, params);
+//		console.log("ST",types, id, params);
 		self._get("/activities/"+id+"/streams/"+types, params, responseHandler(callback));
 	    }
-	}*/
+	}
     };
     this.clubs = {
 	get: function(id, params, callback) {
@@ -432,7 +432,7 @@ var Strava = function(config_obj) {
             self._get("/segments/"+id, params, responseHandler(callback));
 
 	},
-/*	streams: {
+	streams: {
 	    get: function(id, params, callback) {
 		if (typeof params == 'function' && arguments.length == 2) {
                     callback = params;
@@ -442,10 +442,13 @@ var Strava = function(config_obj) {
                     throw new Error("Segment ID is required");
 		    
 		}
-		self._get("/segments/"+id+"/streams", params, responseHandler(callback));
+		var types = params.types.join(",");
+
+		types = "time";
+		self._get("/segments/"+id+"/streams/"+types, params, responseHandler(callback));
 		
 	    }
-	},*/
+	},
 	starred: {
 	    get: function(params, callback) {
 		if (typeof params == 'function' && arguments.length == 2) {
@@ -502,7 +505,7 @@ var Strava = function(config_obj) {
             }
             self._get("/segment_efforts/"+id, params, responseHandler(callback));
 	},
-/*	streams: {
+	streams: {
 	    get: function(id, types, params, callback) {
 		if (typeof params == 'function' && arguments.length == 2) {
                     callback = params;
@@ -512,9 +515,9 @@ var Strava = function(config_obj) {
                     throw new Error("Segment ID is required");
 		    
 		}
-		self._get("/segment_efforts/"+id+"/streams", params, responseHandler(callback));
+		self._get("/segment_efforts/"+id+"/streams/"+types, params, responseHandler(callback));
 	    }
-	}*/
+	}
     };
     
 };
