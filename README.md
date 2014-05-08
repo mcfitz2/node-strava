@@ -1,3 +1,31 @@
+## Getting Started
+
+
+```
+ var strava = new require("./strava")({
+        client_id: "<Client ID>",	
+        client_secret: "<Client Secret>",
+        redirect_uri: "<Redirect URI>",
+        access_token: "<Access Token>"
+    });
+    strava.athlete.get(function(err, res) {
+        console.log(res);
+    });
+    {
+	  "id": 227615,
+	  "resource_state": 3,
+	  "firstname": "John",
+	  "lastname": "Applestrava",
+	  "profile_medium": "http://pics.com/227615/medium.jpg",
+	  "profile": "http://pics.com/227615/large.jpg",
+  	  "city": "San Francisco",
+	  "state": "California",
+  	  "country": "United States",
+	  "sex": "M",
+      ...
+  }
+```
+
 ## Conventions 
 For all methods, `params` is an object with keys corresponding to the parameters given in the Strava API. Some methods have other special parameters.
 ## athlete
