@@ -221,14 +221,14 @@ __Examples__
 >>>>>>> 3a564406f0b8e075fd0bf7e963f973a1a39419fe
 ---------------------------------------
 
-### starred.get(id, params, callback)
+### starred.get(params, callback)
 
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
 ---------------------------------------
 
-### explore.get(id, params, callback)
+### explore.get(params, callback)
 
 ---------------------------------------
 

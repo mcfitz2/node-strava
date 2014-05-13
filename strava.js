@@ -18,24 +18,14 @@ function responseHandler(callback) {
 	if (res.statusCode >= 400 && res.statusCode <= 599) {
 	    
 	    err = new Error("HTTP error "+res.statusCode);
-//	    err.res = res;
 	    return callback(err, body);
 	}
 	if (body && body.errors) {
 	    err = new Error("API Error "+res.statusCode);
-//	    err.res = res;
 	    return callback(err, body);
 	}
-//	if (body === undefined) {
-//	    console.log(err, res, body);
-//	}
-	
 	return callback(null, body);
     };
-}
-function setTimeoutImm(func, interval) {
-    func();
-    return setTimeout(func, interval);
 }
 var Strava = function(config_obj) {
     if (!(this instanceof Strava)) {
@@ -49,9 +39,7 @@ var Strava = function(config_obj) {
     };
     
     this.config = _.extend(config, config_obj);
-    
     this.http = request;
-
     if (!this.config.client_id) { 
 	throw new Error('Missing Client ID');
     }
@@ -555,9 +543,9 @@ var Strava = function(config_obj) {
 		form.append("activity_type", params.activity_type || "ride");
 		form.append("data_type", params.data_type || "gpx");
 		form.getLength(function(err, length) {
-		request.post({
+		self.http.post({
 		    json:true,
-		    url:self.config.api_base+"/uploads", 
+		    uri:self.config.api_base+"/uploads", 
 		    headers:{
 			"Authorization":"Bearer "+self.config.access_token,
 			'Content-Length': length
@@ -642,7 +630,7 @@ Strava.prototype._get = function(call, params, callback) {
     
     params.access_token = this.config.access_token;
     
-    this.http.get({url:url, json:true, qs:params}, callback);
+    this.http.get({uri:url, json:true, qs:params}, callback);
 };
 Strava.prototype._delete = function(call, params, callback) {
     if(!call) {
@@ -656,7 +644,7 @@ Strava.prototype._delete = function(call, params, callback) {
 
     params.access_token = this.config.access_token;
     
-    this.http.del({url:url, json:true, qs:params}, callback);
+    this.http.del({uri:url, json:true, qs:params}, callback);
 };
 Strava.prototype._paged_get = function(call, params, callback) {
     var per_page = 100;
