@@ -38,16 +38,10 @@ For all methods, `params` is an object with keys corresponding to the parameters
 
 ### get(params, callback)
 
-__Examples__
-```
-```
 ---------------------------------------
 
 ### update(params, callback)
 
-__Examples__
-```
-```
 ---------------------------------------
 
 ### followers.get(params, callback)
@@ -55,9 +49,6 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-__Examples__
-```
-```
 ---------------------------------------
 
 ### friends.get(params, callback)
@@ -65,9 +56,6 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-__Examples__
-```
-```
 ---------------------------------------
 
 ### activities.get(params, callback)
@@ -75,9 +63,6 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-__Examples__
-```
-```
 ---------------------------------------
 
 ### clubs.get(params, callback)
@@ -85,31 +70,16 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-__Examples__
-```
-```
 ---------------------------------------
 
 ## athletes
 
 ### get(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### update(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### koms.get(id, params, callback)
@@ -117,10 +87,6 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### friends.get(id, params, callback)
@@ -128,10 +94,6 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### followers.get(id, params, callback)
@@ -139,10 +101,6 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### bothfollowing.get(id, params, callback)
@@ -150,52 +108,24 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ## activities
 
 ### get(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### create(params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### update(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### delete(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### comments.get(id, params, callback)
@@ -203,10 +133,6 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### kudos.get(id, params, callback)
@@ -214,20 +140,10 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### photos.get(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### following.get(params, callback)
@@ -235,52 +151,27 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### zones.get(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### laps.get(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### streams.get(id, params, callback)
 
+__Parameters__
+* `types` - List of data types to request. Should be an array.
 
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ## clubs
 
 ### get(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### members.get(id, params, callback)
@@ -288,10 +179,6 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### activities.get(id, params, callback)
@@ -299,44 +186,25 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ## gear
 
 ### get(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ## segments
 
 ### get(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### streams.get(id, params, callback)
 
+__Parameters__
+* `types` - List of data types to request. Should be an array.
 
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### starred.get(id, params, callback)
@@ -344,20 +212,10 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### explore.get(id, params, callback)
 
-
-
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### leaderboard.get(id, params, callback)
@@ -365,30 +223,25 @@ __Examples__
 __Parameters__
 * `paginate` - Automatically fetch all results. Currently cannot restrict number of pages
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ## segmentefforts
 
 ### get(id, params, callback)
 
-
-__Examples__
-```
-```
 ---------------------------------------
 
 ### streams.get(id, params, callback)
 
-__Examples__
-```
-```
+__Parameters__
+* `types` - List of data types to request. Should be an array.
+
 ---------------------------------------
 
-## uploads(id, params, callback)
+## uploads
+
+### upload(params, callback)
+
 __Parameters__
 * `wait` - Poll API for upload status and return only after an error or a successful upload
 * `poll_interval` - Amount of time (in milliseconds) to wait between polls
@@ -397,9 +250,37 @@ __Parameters__
 * `filename` - Specify filename of GPX, FIT, or TCX file. If `data` is not set, this filename will be used to open the file. Otherwise, it has no real meaning. 
 
 __Examples__
+
+As a stream:
 ```
+strava.uploads.upload({wait:true, data:fs.createReadStream("test.gpx")}, function(err, body) {
+    console.log(err, body);
+});
+```
+As a string:
+```
+fs.readFile("test.gpx", function(err, gpx) {
+    strava.uploads.upload({wait:true, data:gpx}, function(err, body) {
+	console.log(err, body);
+    });
+});
+```
+Using just a filename:
+```
+strava.uploads.upload({wait:true, filename:"test.gpx"}, function(err, body) {
+    console.log(err, body);
+});   
+```
+Uploading a TCX file:
+```
+strava.uploads.upload({wait:true, filename:"test.tcx", "data_type":"tcx"}, function(err, body) {
+    console.log(err, body);
+});
 ```
 ---------------------------------------
 
+### poll(id, callback)
+
+---------------------------------------
 ## Contributing
 node-strava is the work of a single developer. If you want to contribute, feel free to send a pull request!
