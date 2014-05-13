@@ -1,6 +1,9 @@
 ## Getting Started
-
-
+node-strava is not yet in the NPM repository. You can install it by running the command below:
+```
+npm install git+https://github.com/mcfitz2/node-strava.git
+```
+To get started, first initialize the client with your OAuth credentials:
 ```
  var strava = new require("./strava")({
         client_id: "<Client ID>",	
@@ -8,6 +11,9 @@
         redirect_uri: "<Redirect URI>",
         access_token: "<Access Token>"
     });
+```
+Then you can access the API:
+```
     strava.athlete.get(function(err, res) {
         console.log(res);
     });
@@ -395,4 +401,5 @@ __Examples__
 ```
 ---------------------------------------
 
-
+## Contributing
+node-strava is the work of a single developer. If you want to contribute, feel free to send a pull request!
