@@ -4,6 +4,7 @@ var formdata = require("form-data");
 var async = require("async");
 var fs = require("fs");
 var stream = require("stream");
+var path = require("path");
 function responseHandler(callback) {
     return function handler(err, res, body) {
 	if (err) {
@@ -352,7 +353,7 @@ var Strava = function(config_obj) {
 		}
 		var types = params.types.join(",");
 
-		types = "time";
+//		types = "time";
 //		console.log("ST",types, id, params);
 		self._get("/activities/"+id+"/streams/"+types, params, responseHandler(callback));
 	    }
@@ -444,7 +445,7 @@ var Strava = function(config_obj) {
 		}
 		var types = params.types.join(",");
 
-		types = "time";
+	//	types = "time";
 		self._get("/segments/"+id+"/streams/"+types, params, responseHandler(callback));
 		
 	    }
@@ -506,7 +507,7 @@ var Strava = function(config_obj) {
             self._get("/segment_efforts/"+id, params, responseHandler(callback));
 	},
 	streams: {
-	    get: function(id, types, params, callback) {
+	    get: function(id, params, callback) {
 		if (typeof params == 'function' && arguments.length == 2) {
                     callback = params;
                     params = {};
@@ -515,6 +516,7 @@ var Strava = function(config_obj) {
                     throw new Error("Segment ID is required");
 		    
 		}
+		var types = params.types.join(",");
 		self._get("/segment_efforts/"+id+"/streams/"+types, params, responseHandler(callback));
 	    }
 	}
@@ -633,7 +635,7 @@ Strava.prototype.uploads = function(params, callback) {
 	    }
 	});
 	form.append("file", buffer, {
-	    filename: params.filename || "strava.gpx",
+	    filename: path.basename(params.filename) || "strava.gpx",
 	    knownLength: buffer.length}); 
 	form.append("activity_type", params.activity_type || "ride");
 	form.append("data_type", params.data_type || "gpx");
