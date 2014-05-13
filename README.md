@@ -166,13 +166,6 @@ __Parameters__
 __Parameters__
 * `types` - List of data types to request. Should be an array.
 
-<<<<<<< HEAD
-=======
-
-__Examples__
-```
-```
->>>>>>> 3a564406f0b8e075fd0bf7e963f973a1a39419fe
 ---------------------------------------
 
 ## clubs
@@ -212,13 +205,6 @@ __Parameters__
 __Parameters__
 * `types` - List of data types to request. Should be an array.
 
-<<<<<<< HEAD
-=======
-
-__Examples__
-```
-```
->>>>>>> 3a564406f0b8e075fd0bf7e963f973a1a39419fe
 ---------------------------------------
 
 ### starred.get(params, callback)
@@ -250,12 +236,6 @@ __Parameters__
 __Parameters__
 * `types` - List of data types to request. Should be an array.
 
-<<<<<<< HEAD
-=======
-__Examples__
-```
-```
->>>>>>> 3a564406f0b8e075fd0bf7e963f973a1a39419fe
 ---------------------------------------
 
 ## uploads
