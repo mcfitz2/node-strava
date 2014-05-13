@@ -263,7 +263,8 @@ __Examples__
 
 ### streams.get(id, params, callback)
 
-
+__Parameters__
+* `types` - List of data types to request. Should be an array.
 
 
 __Examples__
@@ -331,7 +332,8 @@ __Examples__
 
 ### streams.get(id, params, callback)
 
-
+__Parameters__
+* `types` - List of data types to request. Should be an array.
 
 
 __Examples__
@@ -383,12 +385,18 @@ __Examples__
 
 ### streams.get(id, params, callback)
 
+__Parameters__
+* `types` - List of data types to request. Should be an array.
+
 __Examples__
 ```
 ```
 ---------------------------------------
 
-## uploads(id, params, callback)
+## uploads
+
+### upload(params, callback)
+
 __Parameters__
 * `wait` - Poll API for upload status and return only after an error or a successful upload
 * `poll_interval` - Amount of time (in milliseconds) to wait between polls
@@ -401,5 +409,11 @@ __Examples__
 ```
 ---------------------------------------
 
+### poll(id, callback)
+
+__Examples__
+```
+```
+---------------------------------------
 ## Contributing
 node-strava is the work of a single developer. If you want to contribute, feel free to send a pull request!
