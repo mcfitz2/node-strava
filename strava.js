@@ -580,7 +580,7 @@ var Strava = function(config_obj) {
 			var buff = Buffer.concat(arr);
 			upload(buff, callback);
 		    });
-		} else if (params.data instanceof String) {
+		} else if (params.data instanceof String || typeof(params.data) === 'string') {
 		    upload(new Buffer(params.data), callback);
 		} else if (params.data instanceof Buffer) {
 		    upload(params.data, callback);
