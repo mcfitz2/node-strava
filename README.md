@@ -1,7 +1,7 @@
 ## Getting Started
-node-strava is not yet in the NPM repository. You can install it by running the command below:
+node-strava is in the NPM repository. You can install it by running the command below:
 ```
-npm install git+https://github.com/mcfitz2/node-strava.git
+npm install strava
 ```
 To get started, first initialize the client with your OAuth credentials:
 ```
