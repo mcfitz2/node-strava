@@ -3,15 +3,22 @@
   "version": "0.0.1",
   "description": "Node.js library for the Strava V3 API",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Micah Fitzgerald",
-  "license": "BSD-2-Clause",
+  "license": "GPL v2",
   "dependencies": {
-      "underscore":"latest",
-      "request":"latest",
-      "form-data":"latest",
-      "async":"latest"
+    "underscore": "latest",
+    "request": "latest",
+    "form-data": "latest",
+    "async": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mcfitz2/node-strava.git"
+  },
+  "keywords": [
+    "strava"
+  ],
+  "bugs": {
+    "url": "https://github.com/mcfitz2/node-strava/issues"
   }
 }
