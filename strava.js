@@ -604,7 +604,32 @@ var Strava = function(config_obj) {
 	    }));
 	}
     };
+    this.authenticate = function(params, callback) {
+		if (typeof params == 'function' && arguments.length == 1) {
+			callback = params;
+			params = {};
+	    }
+
+	    // if (typeof params.code === 'undefined') {
+	    // 	throw new Error("params must include a code value retrieved from Strava")
+	    // }
+	    var callParams = {
+	    	client_id: this.config.client_id,
+	    	client_secret: this.config.client_secret,
+	    	code: params.code
+	    }
+	    
+		self._post("/oauth/token", callParams, responseHandler(function(err, body) {
+			self._setAccessToken(body.access_token)
+			callback(err, body);
+	    }))
+	};
 };
+Strava.prototype._setAccessToken = function(access_token) {
+	this.config.access_token = access_token
+	return this.config.access_token
+}
+
 Strava.prototype._checkStatus = function(body) {
     switch(body.status) {
     case "Your activity is still being processed.":
@@ -631,6 +656,22 @@ Strava.prototype._get = function(call, params, callback) {
     params.access_token = this.config.access_token;
     
     this.http.get({uri:url, json:true, qs:params}, callback);
+};
+Strava.prototype._post = function(call, params, callback) {
+    if(!call) {
+		throw new Error('call is required');
+    }
+    if(!this.config.access_token && call != "/oauth/token") {
+		throw new Error('Valid access token is required');
+    }
+
+    var url = this.config.api_base+call;
+    
+    params.access_token = this.config.access_token;
+    console.log("POST call")
+    console.log(url)
+    console.log(params)
+    this.http.post({uri:url, json:true, qs:params}, callback);
 };
 Strava.prototype._delete = function(call, params, callback) {
     if(!call) {
