@@ -1,6 +1,6 @@
 {
   "name": "strava",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node.js library for the Strava V3 API",
   "main": "index.js",
   "author": "Micah Fitzgerald",
